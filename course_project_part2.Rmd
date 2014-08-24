@@ -6,6 +6,8 @@ output: pdf_document
 fontsize: 11pt
 ---
 
+Full code available here: https://github.com/ldamewood/coursera-statinference-008/blob/master/course_project_part2.Rmd
+
 ```{r, echo=FALSE, message=FALSE, warnings=FALSE, message=FALSE}
 library(knitr)
 library(grid)
