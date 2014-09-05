@@ -1,0 +1,144 @@
+---
+title: "Quiz 4"
+author: "Liam Damewood"
+date: "August 24, 2014"
+output: html_document
+---
+## Question 1
+
+A pharmaceutical company is interested in testing a potential blood pressure lowering medication. Their first examination considers only subjects that received the medication at baseline then two weeks later. The data are as follows (SBP in mmHg)
+
+```{r}
+rm(list = ls())
+subject <- c(1:5,1:5)
+measurement <- c(140,138,150,148,135,132,135,151,146,130)
+type <- c(rep("baseline", 5), rep("week2", 5))
+dataset <- data.frame(subject, measurement, type)
+ttest <- t.test(measurement ~ type, paired = T, data = dataset)
+round(ttest$p.value,3)
+```
+
+## Question 2
+
+A sample of 9 men yielded a sample average brain volume of 1,100cc and a standard deviation of 30cc. What is the complete set of values of $\mu_0$ that a test of H0: $\mu=\mu_0$ would fail to reject the null hypothesis in a two sided 5% Students t-test?
+
+```{r}
+rm(list = ls())
+n <- 9
+mean <- 1100
+sd <- 30
+round(mean + c(-1,1) * qt(0.975, df = n-1) * sd / sqrt(n))
+```
+
+## Question 3
+
+Researchers conducted a blind taste test of Coke versus Pepsi. Each of four people was asked which of two blinded drinks given in random order that they preferred. The data was such that 3 of the 4 people chose Coke. Assuming that this sample is representative, report a P-value for a test of the hypothesis that Coke is preferred to Pepsi using a one sided exact test.
+
+```{r}
+rm(list = ls())
+round(binom.test(3,4,p=0.5,alternative = 'greater')$p.value,2)
+```
+
+## Question 4
+
+Infection rates at a hospital above 1 infection per 100 person days at risk are believed to be too high and are used as a benchmark. A hospital that had previously been above the benchmark recently had 10 infections over the last 1,787 person days at risk. About what is the one sided P-value for the relevant test of whether the hospital is *below* the standard?
+
+```{r}
+rm(list = ls())
+round(ppois(0.01*1787-1, 10, lower.tail = F),2)
+```
+
+## Question 5
+
+Suppose that 18 obese subjects were randomized, 9 each, to a new diet pill and a placebo. Subjects’ body mass indices (BMIs) were measured at a baseline and again after having received the treatment or placebo for four weeks. The average difference from follow-up to the baseline (followup - baseline) was −3 kg/m2 for the treated group and 1 kg/m2 for the placebo group. The corresponding standard deviations of the differences was 1.5 kg/m2 for the treatment group and 1.8 kg/m2 for the placebo group. Does the change in BMI over the two year period appear to differ between the treated and placebo groups? Assuming normality of the underlying data and a common population variance, give a pvalue for a two sided t test.
+
+```{r}
+rm(list = ls())
+n1 = 9
+n2 = 9
+mean1 = -3.0
+sd1 = +1.5
+sigma1 = sd1
+mean2 = +1.0
+sd2 = +1.8
+sigma2 = sd2
+
+sp = sqrt(((n1 - 1)*sigma1^2+(n2-1)*sigma2^2) / (n1 + n2 - 2))
+t = abs(mean1 - mean2) / sp / sqrt(1/n1 + 1/n2)
+round(1 - pt(t, df = n1 + n2 - 2),2)
+```
+
+## Question 6
+
+Brain volumes for 9 men yielded a 90% confidence interval of 1,077 to 1,123 cc. Would you reject in a two sided 5% hypothesis test of H0: $\mu = 1,078$ cc?
+
+```{r}
+rm(list = ls())
+n = 9
+ci = c(1077,1123)
+mean = 0.5*(ci[2] + ci[1])
+z = qt(0.9,df=n-1)
+sigma = (mean - 1078) / z
+sd = sigma * sqrt(n)
+
+
+```
+
+## Question 7
+
+Researchers would like to conduct a study of 100 healthy adults to detect a four year mean brain volume loss of .01 mm$^3$. Assume that the standard deviation of four year volume loss in this population is .04 mm$^3$. About what would be the power of the study for a 5% one sided test versus a null hypothesis of no volume loss?
+
+```{r}
+rm(list = ls())
+n = 100
+mean = 0.01
+sd = 0.04
+sigma = sd / sqrt(n)
+z = qnorm(0.95, mean = 0, sd = sigma)
+round(pnorm(z, mean = mean, sd = sigma, lower.tail = F),2)
+```
+
+## Question 8
+
+Researchers would like to conduct a study of $n$ healthy adults to detect a four year mean brain volume loss of .01 mm$^3$. Assume that the standard deviation of four year volume loss in this population is .04 mm$^3$. About what would be the value of $n$ needded for 90% power of type one error rate of 5% one sided test versus a null hypothesis of no volume loss?
+
+```{r}
+rm(list = ls())
+n = c(100, 120, 140, 160, 180)
+mean = 0.01
+sd = 0.04
+sigma = sd / sqrt(n)
+z = qnorm(0.95, mean= 0, sd = sigma)
+result = data.frame(num = n, beta = round(pnorm(z, mean = mean, sd = sigma, lower.tail = F),2))
+```
+## Question 9
+
+As you increase the type one error rate, $\alpha$, what happens to power?
+
+## Question 10
+
+The Daily Planet ran a recent story about Kryptonite poisoning in the water supply after a recent event in Metropolis. Their usual field reporter, Clark Kent, called in sick and so Lois Lane reported the story. Researchers sampled 288 individuals and found mean blood Kryptonite levels of 44, both measured in Lex Luthors per milliliter (LL/ml). They compared this to 288 sampled individuals from Gotham city who had an average level of 42.04. About what is the P-value for a two sided Z test of the relevant hypothesis? Assume that the standard deviation is 12 for both groups.
+
+```{r}
+rm(list = ls())
+n1 = 288
+n2 = 288
+mean1 = 44
+sd1 = 12
+sigma1 = sd1
+mean2 = 42.04
+sd2 = 12 
+sigma2 = sd2
+
+sp = sqrt(((n1 - 1)*sigma1^2+(n2-1)*sigma2^2) / (n1 + n2 - 2))
+t = (mean1 - mean2) / sp / sqrt(1/n1 + 1/n2)
+round(2*(1 - pt(t, df = n1 + n2 - 2)),2)
+```
+
+## Question 11
+
+Suppose that a researcher performs 10 hypothesis tests and wants a familywise error rate of no more than 5%. What alpha level should she compare her pvalues to in order to ensure the desired error rate? Express it as a proportion to two decimal places.
+
+```{r}
+1./10
+```
